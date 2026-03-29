@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/HomePage";
-import TaskCreatePage from "../pages/TaskCreatePage";
 import TaskListPage from "../pages/TaskListPage";
 
 const router = createBrowserRouter([
@@ -11,10 +10,6 @@ const router = createBrowserRouter([
     {
         path: "/tasks",
         element: <TaskListPage />,
-    },
-    {
-        path: "/createTask",
-        element: <TaskCreatePage />,
     },
 ]);
 

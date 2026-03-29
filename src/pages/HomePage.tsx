@@ -45,14 +45,6 @@ const HomePage = () => {
                     <AppButton type="button" onClick={() => navigate("/tasks")}>
                         View Tasks
                     </AppButton>
-
-                    <AppButton
-                        type="button"
-                        variant="secondary"
-                        onClick={() => navigate("/createTask")}
-                    >
-                        Create New Task
-                    </AppButton>
                 </div>
             </section>
 

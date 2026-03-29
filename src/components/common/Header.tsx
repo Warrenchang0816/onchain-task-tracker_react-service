@@ -23,15 +23,6 @@ const Header = () => {
                     >
                         Tasks
                     </NavLink>
-
-                    <NavLink
-                        to="/createTask"
-                        className={({ isActive }) =>
-                            isActive ? "nav-link active" : "nav-link"
-                        }
-                    >
-                        Create Task
-                    </NavLink>
                 </nav>
             </div>
         </header>

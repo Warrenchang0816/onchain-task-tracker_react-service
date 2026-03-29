@@ -25,23 +25,28 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
 
             <p>{task.description}</p>
 
-            <div className="task-card-actions">
-                <AppButton
-                    type="button"
-                    variant="secondary"
-                    onClick={() => onEdit?.(task)}
-                >
-                    Edit
-                </AppButton>
-
-                <AppButton
-                    type="button"
-                    variant="secondary"
-                    onClick={() => onDelete?.(task)}
-                >
-                    Delete
-                </AppButton>
-            </div>
+            {(onEdit || onDelete) && (
+                <div className="task-card-actions">
+                    {onEdit && (
+                        <AppButton
+                            type="button"
+                            variant="secondary"
+                            onClick={() => onEdit(task)}
+                        >
+                            Edit
+                        </AppButton>
+                    )}
+                    {onDelete && (
+                        <AppButton
+                            type="button"
+                            variant="secondary"
+                            onClick={() => onDelete(task)}
+                        >
+                            Delete
+                        </AppButton>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

@@ -20,17 +20,17 @@ interface TaskFormProps {
 interface TaskFormValues {
     title: string;
     description: string;
-    status: string;
     priority: string;
     dueDate: string;
+    rewardAmount: string;
 }
 
 const defaultFormValues: TaskFormValues = {
     title: "",
     description: "",
-    status: "CREATED",
     priority: "MEDIUM",
     dueDate: "",
+    rewardAmount: "0",
 };
 
 const TaskForm = ({
@@ -47,11 +47,11 @@ const TaskForm = ({
             setFormValues({
                 title: initialTask.title ?? "",
                 description: initialTask.description ?? "",
-                status: initialTask.status ?? "CREATED",
                 priority: initialTask.priority ?? "MEDIUM",
                 dueDate: initialTask.dueDate
                     ? initialTask.dueDate.slice(0, 16)
                     : "",
+                rewardAmount: initialTask.rewardAmount ?? "0",
             });
             return;
         }
@@ -76,10 +76,24 @@ const TaskForm = ({
         setIsSubmitting(true);
 
         try {
-            const payload: CreateTaskPayload | UpdateTaskPayload = {
+            if (mode === "create") {
+                const payload: CreateTaskPayload = {
+                    title: formValues.title.trim(),
+                    description: formValues.description.trim(),
+                    priority: formValues.priority,
+                    dueDate: formValues.dueDate
+                        ? new Date(formValues.dueDate).toISOString()
+                        : null,
+                    rewardAmount: formValues.rewardAmount.trim() || "0",
+                };
+
+                await onSubmit(payload);
+                return;
+            }
+
+            const payload: UpdateTaskPayload = {
                 title: formValues.title.trim(),
                 description: formValues.description.trim(),
-                status: formValues.status,
                 priority: formValues.priority,
                 dueDate: formValues.dueDate
                     ? new Date(formValues.dueDate).toISOString()
@@ -118,19 +132,6 @@ const TaskForm = ({
             </div>
 
             <div className="form-field">
-                <label htmlFor="status">Status</label>
-                <select
-                    id="status"
-                    name="status"
-                    value={formValues.status}
-                    onChange={handleChange}
-                >
-                    <option value="CREATED">Created</option>
-                    <option value="COMPLETED">Completed</option>
-                </select>
-            </div>
-
-            <div className="form-field">
                 <label htmlFor="priority">Priority</label>
                 <select
                     id="priority"
@@ -143,6 +144,21 @@ const TaskForm = ({
                     <option value="HIGH">High</option>
                 </select>
             </div>
+
+            {mode === "create" && (
+                <div className="form-field">
+                    <label htmlFor="rewardAmount">Reward Amount</label>
+                    <input
+                        id="rewardAmount"
+                        name="rewardAmount"
+                        type="number"
+                        min="0"
+                        step="0.00000001"
+                        value={formValues.rewardAmount}
+                        onChange={handleChange}
+                    />
+                </div>
+            )}
 
             <div className="form-field">
                 <label htmlFor="dueDate">Due Date</label>

@@ -7,6 +7,7 @@ interface ConfirmDialogProps {
     description: string;
     confirmText?: string;
     cancelText?: string;
+    isLoading?: boolean;
     onConfirm: () => void;
     onCancel: () => void;
 }
@@ -17,6 +18,7 @@ const ConfirmDialog = ({
     description,
     confirmText = "Confirm",
     cancelText = "Cancel",
+    isLoading = false,
     onConfirm,
     onCancel,
 }: ConfirmDialogProps) => {
@@ -26,12 +28,12 @@ const ConfirmDialog = ({
                 <p>{description}</p>
 
                 <div className="confirm-dialog-actions">
-                    <AppButton type="button" variant="secondary" onClick={onCancel}>
+                    <AppButton type="button" variant="secondary" onClick={onCancel} disabled={isLoading}>
                         {cancelText}
                     </AppButton>
 
-                    <AppButton type="button" onClick={onConfirm}>
-                        {confirmText}
+                    <AppButton type="button" onClick={onConfirm} disabled={isLoading}>
+                        {isLoading ? "Processing..." : confirmText}
                     </AppButton>
                 </div>
             </div>

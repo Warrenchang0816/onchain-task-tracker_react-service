@@ -10,6 +10,7 @@ import TaskCard from "../components/task/TaskCard";
 import AppLayout from "../layouts/AppLayout";
 import type { Task } from "../types/task";
 
+
 const HomePage = () => {
     const navigate = useNavigate();
 

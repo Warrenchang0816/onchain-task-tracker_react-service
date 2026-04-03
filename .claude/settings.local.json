@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//d/Git/onchain-task-tracker/go-service/**)"
-    ]
-  }
-}

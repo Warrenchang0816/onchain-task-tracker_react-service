@@ -9,7 +9,7 @@ export interface TaskSummary {
 export const getTaskSummary = (tasks: Task[]): TaskSummary => {
     const total = tasks.length;
     const completed = tasks.filter((task) => task.status === "COMPLETED").length;
-    const pending = tasks.filter((task) => task.status === "CREATED").length;
+    const pending = tasks.filter((task) => task.status === "OPEN").length;
 
     return {
         total,

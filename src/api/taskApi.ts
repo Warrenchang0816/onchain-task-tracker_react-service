@@ -1,128 +1,90 @@
-// import { mockTasks } from "../mocks/tasks";
-// import type { CreateTaskPayload, Task, UpdateTaskPayload } from "../types/task";
-
-// export const fetchTasks = async (): Promise<Task[]> => {
-//     return new Promise((resolve) => {
-//         setTimeout(() => {
-//             resolve([...mockTasks]);
-//         }, 400);
-//     });
-// };
-
-// export const createTask = async (payload: CreateTaskPayload): Promise<Task> => {
-//     return new Promise((resolve) => {
-//         setTimeout(() => {
-//             const newTask: Task = {
-//                 id: mockTasks.length > 0 ? Math.max(...mockTasks.map((task) => task.id)) + 1 : 1,
-//                 title: payload.title,
-//                 description: payload.description,
-//                 status: "CREATED",
-//                 createdAt: new Date().toISOString(),
-//             };
-
-//             mockTasks.unshift(newTask);
-//             resolve(newTask);
-//         }, 400);
-//     });
-// };
-
-// export const updateTask = async (
-//     taskId: number,
-//     payload: UpdateTaskPayload,
-// ): Promise<Task | null> => {
-//     return new Promise((resolve) => {
-//         setTimeout(() => {
-//             const target = mockTasks.find((task) => task.id === taskId);
-
-//             if (!target) {
-//                 resolve(null);
-//                 return;
-//             }
-
-//             target.title = payload.title;
-//             target.description = payload.description;
-
-//             resolve({ ...target });
-//         }, 400);
-//     });
-// };
-
-// export const deleteTask = async (taskId: number): Promise<void> => {
-//     return new Promise((resolve) => {
-//         setTimeout(() => {
-//             const index = mockTasks.findIndex((task) => task.id === taskId);
-
-//             if (index !== -1) {
-//                 mockTasks.splice(index, 1);
-//             }
-
-//             resolve();
-//         }, 300);
-//     });
-// };
-
-
-
-import type { Task, TaskListResponse } from "../types/task";
+import type { Task, TaskDetailResponse, TaskListResponse } from "../types/task";
 
 const API_BASE_URL =
-import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
+    import.meta.env.VITE_API_GO_SERVICE_URL || "http://localhost:8081/api";
 
 export type CreateTaskPayload = {
     title: string;
     description: string;
-    status: string;
     priority: string;
     dueDate: string | null;
+    rewardAmount?: string;
 };
 
 export type UpdateTaskPayload = {
     title: string;
     description: string;
-    status: string;
     priority: string;
     dueDate: string | null;
 };
 
+export async function getTask(id: number): Promise<Task> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
+        method: "GET",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch task: ${response.status}`);
+    }
+
+    const result: TaskDetailResponse = await response.json();
+
+    if (!result.success) {
+        throw new Error(result.message || "Failed to fetch task");
+    }
+
+    return result.data;
+}
+
 export async function getTasks(): Promise<Task[]> {
-const response = await fetch(`${API_BASE_URL}/tasks`, {
-method: "GET",
-});
+    const response = await fetch(`${API_BASE_URL}/tasks`, {
+        method: "GET",
+        credentials: "include",
+    });
 
-if (!response.ok) {
-throw new Error(`Failed to fetch tasks: ${response.status}`);
-}
+    if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status}`);
+    }
 
-const result: TaskListResponse = await response.json();
+    const result: TaskListResponse = await response.json();
 
-if (!result.success) {
-throw new Error(result.message || "Failed to fetch tasks");
-}
+    if (!result.success) {
+        throw new Error(result.message || "Failed to fetch tasks");
+    }
 
-return result.data;
+    return result.data;
 }
 
 export async function createTask(payload: CreateTaskPayload): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/tasks`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            title: payload.title,
+            description: payload.description,
+            priority: payload.priority,
+            dueDate: payload.dueDate,
+            rewardAmount: payload.rewardAmount ?? "0",
+        }),
     });
 
     if (!response.ok) {
-    throw new Error(`Failed to create task: ${response.status}`);
+        throw new Error(`Failed to create task: ${response.status}`);
     }
 }
 
 export async function updateTask(id: number, payload: UpdateTaskPayload): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -130,18 +92,113 @@ export async function updateTask(id: number, payload: UpdateTaskPayload): Promis
     }
 }
 
-export async function archiveTask(id: number): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/tasks/${id}/status`, {
+export async function cancelTask(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}/cancel`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to cancel task: ${response.status}`);
+    }
+}
+
+export async function acceptTask(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}/accept`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to accept task: ${response.status}`);
+    }
+}
+
+export type SubmitTaskPayload = {
+    resultContent: string;
+    resultFileUrl?: string;
+    resultHash?: string;
+};
+
+export async function submitTask(id: number, payload: SubmitTaskPayload): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}/submissions`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify({
-            status: "archived",
+            resultContent: payload.resultContent,
+            resultFileUrl: payload.resultFileUrl ?? "",
+            resultHash: payload.resultHash ?? "",
         }),
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to archive task: ${response.status}`);
+        throw new Error(`Failed to submit task: ${response.status}`);
     }
+}
+
+export async function approveTask(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}/approve`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to approve task: ${response.status}`);
+    }
+}
+
+export async function claimReward(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tasks/${id}/claim`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to claim reward: ${response.status}`);
+    }
+}
+
+export type BlockchainLog = {
+    id: number;
+    taskId: string;
+    action: string;
+    txHash: string;
+    chainId: number;
+    contractAddress: string;
+    status: string;
+    createdAt: string;
+};
+
+export async function getBlockchainLogs(): Promise<BlockchainLog[]> {
+    const response = await fetch(`${API_BASE_URL}/blockchain-logs`, {
+        method: "GET",
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch blockchain logs: ${response.status}`);
+    }
+
+    const result: { success: boolean; data: BlockchainLog[]; message: string } = await response.json();
+
+    if (!result.success) {
+        throw new Error(result.message || "Failed to fetch blockchain logs");
+    }
+
+    return result.data;
 }

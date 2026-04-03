@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Header from "../components/common/Header";
 
+
 interface AppLayoutProps {
     children: ReactNode;
 }

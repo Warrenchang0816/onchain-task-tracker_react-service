@@ -19,9 +19,11 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const syncedRef = useRef(false);
 
-    const { isSuccess: isReceiptSuccess } = useWaitForTransactionReceipt({
+    const { isSuccess: isReceiptSuccess, isLoading: isWaitingReceipt } = useWaitForTransactionReceipt({
         hash: txHash,
     });
+
+    const isProcessing = isPending || isWaitingReceipt;
 
     useEffect(() => {
         const syncFunded = async () => {
@@ -100,9 +102,9 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
             <AppButton
                 type="button"
                 onClick={handleFund}
-                disabled={!address || isPending}
+                disabled={!address || isProcessing}
             >
-                {isPending ? "Funding..." : "Fund"}
+                {isProcessing ? "..." : "Fund"}
             </AppButton>
         </div>
     );

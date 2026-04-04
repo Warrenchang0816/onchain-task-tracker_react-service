@@ -176,6 +176,7 @@ export async function claimReward(id: number): Promise<void> {
 export type BlockchainLog = {
     id: number;
     taskId: string;
+    walletAddress: string;
     action: string;
     txHash: string;
     chainId: number;

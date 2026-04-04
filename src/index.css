@@ -128,7 +128,7 @@ body,
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     background: #f5f7fb;
     color: #1f2937;
 }
@@ -159,7 +159,7 @@ header {
 }
 
 header > div {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -170,9 +170,16 @@ nav {
 }
 
 main {
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 32px 24px;
+    padding: 32px 48px;
+}
+
+@media (max-width: 1024px) {
+    main {
+        padding: 24px 20px;
+    }
 }
 
 .hero-section {
@@ -218,13 +225,27 @@ main {
     margin-top: 0;
     margin-bottom: 12px;
     font-size: 16px;
+    font-weight: 600;
     color: #6b7280;
 }
 
 .summary-card p {
     margin: 0;
     font-size: 32px;
-    font-weight: bold;
+    font-weight: 800;
+    color: #111827;
+}
+
+.summary-card--default {
+    border-left: 4px solid #454c5d;
+}
+
+.summary-card--success {
+    border-left: 4px solid #166534;
+}
+
+.summary-card--info {
+    border-left: 4px solid #0369a1;
 }
 
 .page-section {
@@ -293,14 +314,35 @@ main {
     font-weight: bold;
 }
 
-.task-status.created {
+.task-status.created,
+.task-status.open {
     background: #e0f2fe;
     color: #0369a1;
+}
+
+.task-status.in-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.task-status.submitted {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.task-status.approved {
+    background: #fef9c3;
+    color: #854d0e;
 }
 
 .task-status.completed {
     background: #dcfce7;
     color: #166534;
+}
+
+.task-status.cancelled {
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 .task-form {
@@ -476,6 +518,50 @@ main {
     align-items: flex-start;
     gap: 16px;
     flex-wrap: wrap;
+}
+
+.task-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.task-meta-item {
+    font-size: 12px;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-weight: 500;
+}
+
+.task-priority {
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 3px 10px;
+}
+
+.task-priority--low {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.task-priority--medium {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.task-priority--high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.task-priority--urgent {
+    background: #fce7f3;
+    color: #9d174d;
 }
 
 .task-card-actions {
@@ -767,4 +853,108 @@ main {
 .log-status-badge.log-status-failed {
     background: #fee2e2;
     color: #dc2626;
+}
+
+/* App Layout */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-layout main {
+    flex: 1;
+}
+
+/* Footer */
+.app-footer {
+    background: #f7f9fd;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 48px;
+}
+
+.app-footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.app-footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.app-footer-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.app-footer-copy {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.app-footer-links {
+    display: flex;
+    gap: 24px;
+}
+
+.app-footer-links a {
+    font-size: 13px;
+    color: #6b7280;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.app-footer-links a:hover {
+    color: #111827;
+}
+
+/* Blockchain Logs Stats */
+.logs-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.logs-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.logs-stat-card h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.logs-stat-card p {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
+}
+
+@media (max-width: 1024px) {
+    .logs-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

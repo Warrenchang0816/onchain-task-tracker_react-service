@@ -55,6 +55,20 @@ const TaskCard = ({
 
             <p>{task.description}</p>
 
+            <div className="task-card-meta">
+                <span className={`task-priority task-priority--${task.priority.toLowerCase()}`}>
+                    {task.priority}
+                </span>
+                {Number(task.rewardAmount) > 0 && (
+                    <span className="task-meta-item">{task.rewardAmount} ETH</span>
+                )}
+                {task.dueDate && (
+                    <span className="task-meta-item">
+                        Due {new Date(task.dueDate).toLocaleDateString()}
+                    </span>
+                )}
+            </div>
+
             {shouldShowActions && (
                 <div className="task-card-actions">
                     {task.canEdit && onEdit && (

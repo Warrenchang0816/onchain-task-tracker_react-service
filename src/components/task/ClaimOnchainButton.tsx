@@ -18,9 +18,11 @@ const ClaimOnchainButton = ({ task, onSuccess }: ClaimOnchainButtonProps) => {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const syncedRef = useRef(false);
 
-    const { isSuccess: isReceiptSuccess } = useWaitForTransactionReceipt({
+    const { isSuccess: isReceiptSuccess, isLoading: isWaitingReceipt } = useWaitForTransactionReceipt({
         hash: txHash,
     });
+
+    const isProcessing = isPending || isWaitingReceipt;
 
     useEffect(() => {
         const syncClaimed = async () => {
@@ -83,8 +85,8 @@ const ClaimOnchainButton = ({ task, onSuccess }: ClaimOnchainButtonProps) => {
     return (
         <div className="onchain-button-wrapper">
             {errorMessage && <p className="form-error">{errorMessage}</p>}
-            <AppButton type="button" onClick={handleClaim} disabled={isPending}>
-                {isPending ? "Claiming..." : "Claim On-chain"}
+            <AppButton type="button" onClick={handleClaim} disabled={isProcessing}>
+                {isProcessing ? "..." : "Claim On-chain"}
             </AppButton>
         </div>
     );

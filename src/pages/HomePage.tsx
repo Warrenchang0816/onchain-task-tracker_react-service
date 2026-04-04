@@ -38,8 +38,7 @@ const HomePage = () => {
             <section className="hero-section">
                 <h1>Manage your on-chain tasks with clarity</h1>
                 <p>
-                    Create tasks, track completion status, and prepare for wallet
-                    integration.
+                    建立任務、追蹤完成狀態，並完成鏈上獎勵結算。
                 </p>
 
                 <div className="hero-actions">
@@ -54,9 +53,9 @@ const HomePage = () => {
             ) : (
                 <>
                     <section className="summary-section">
-                        <SummaryCard title="Total Tasks" value={summary.total} />
-                        <SummaryCard title="Completed" value={summary.completed} />
-                        <SummaryCard title="Pending" value={summary.pending} />
+                        <SummaryCard title="Total Tasks" value={summary.total} variant="default" />
+                        <SummaryCard title="Completed" value={summary.completed} variant="success" />
+                        <SummaryCard title="Pending" value={summary.pending} variant="info" />
                     </section>
 
                     <section className="page-section dashboard-section">

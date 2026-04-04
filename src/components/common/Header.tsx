@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { getAuthMe } from "../../api/authApi";
 import WalletConnectPanel from "../wallet/WalletConnectPanel";
 
 const Header = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        getAuthMe()
+            .then((res) => setIsAuthenticated(res.authenticated))
+            .catch(() => setIsAuthenticated(false));
+    }, []);
+
     return (
         <header>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -27,14 +37,16 @@ const Header = () => {
                             Tasks
                         </NavLink>
 
-                        <NavLink
-                            to="/logs"
-                            className={({ isActive }) =>
-                                isActive ? "nav-link active" : "nav-link"
-                            }
-                        >
-                            History
-                        </NavLink>
+                        {isAuthenticated && (
+                            <NavLink
+                                to="/logs"
+                                className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                }
+                            >
+                                History
+                            </NavLink>
+                        )}
                     </nav>
                 </div>
 

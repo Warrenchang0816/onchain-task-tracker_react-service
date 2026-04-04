@@ -24,6 +24,7 @@ export interface AuthMeResponse {
     authenticated: boolean;
     address?: string;
     chainId?: string;
+    isPlatformWallet: boolean;
 }
 
 export interface AuthLogoutResponse {

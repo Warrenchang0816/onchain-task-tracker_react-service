@@ -22,6 +22,8 @@ function shortAddress(address?: string | null): string {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+const SEPOLIA_CHAIN_ID = "0xaa36a7";
+
 function getChainLabel(chainId?: string | null): string {
     if (!chainId) {
         return "Unknown";
@@ -43,6 +45,10 @@ function getChainLabel(chainId?: string | null): string {
         default:
             return chainId;
     }
+}
+
+function isWrongNetwork(chainId?: string | null): boolean {
+    return !!chainId && chainId.toLowerCase() !== SEPOLIA_CHAIN_ID;
 }
 
 function getProvider() {
@@ -162,6 +168,40 @@ const WalletConnectPanel = () => {
         };
     }, []);
 
+    const handleSwitchToSepolia = async () => {
+        const provider = getProvider();
+        if (!provider) return;
+
+        try {
+            setErrorMessage("");
+            await provider.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: SEPOLIA_CHAIN_ID }],
+            });
+        } catch (error) {
+            const err = error as { code?: number; message?: string } | null;
+            // 4902: 錢包沒有這條鏈，需要先新增
+            if (err?.code === 4902) {
+                try {
+                    await provider.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: SEPOLIA_CHAIN_ID,
+                            chainName: "Sepolia",
+                            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                            rpcUrls: ["https://rpc.sepolia.org"],
+                            blockExplorerUrls: ["https://sepolia.etherscan.io"],
+                        }],
+                    });
+                } catch {
+                    setErrorMessage("無法新增 Sepolia 網路");
+                }
+            } else {
+                setErrorMessage(err?.message ?? "切換網路失敗");
+            }
+        }
+    };
+
     const handleConnect = async () => {
         const provider = getProvider();
 
@@ -184,6 +224,14 @@ const WalletConnectPanel = () => {
 
             setAddress(accounts[0] ?? null);
             setChainId(currentChainId ?? null);
+
+            // 連接後若不是 Sepolia，自動要求切換
+            if (currentChainId && currentChainId.toLowerCase() !== SEPOLIA_CHAIN_ID) {
+                await provider.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: SEPOLIA_CHAIN_ID }],
+                });
+            }
         } catch (error) {
             console.error("connect failed:", error);
 
@@ -366,7 +414,7 @@ const WalletConnectPanel = () => {
                         {isAuthenticated ? "Authenticated" : "Wallet Connected"}
                     </span>
 
-                    {!isAuthenticated && (
+                    {!isAuthenticated && !isWrongNetwork(chainId) && (
                         <button
                             type="button"
                             onClick={handleSignIn}

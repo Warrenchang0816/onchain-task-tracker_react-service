@@ -1,58 +1,43 @@
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { getAuthMe } from "../../api/authApi";
+import { useNavigate } from "react-router-dom";
 import WalletConnectPanel from "../wallet/WalletConnectPanel";
+import PlatformCoinBadge from "./PlatformCoinBadge";
 
 const Header = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    useEffect(() => {
-        getAuthMe()
-            .then((res) => setIsAuthenticated(res.authenticated))
-            .catch(() => setIsAuthenticated(false));
-    }, []);
+    const navigate = useNavigate();
 
     return (
-        <header>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                    <h2>On-chain Task Tracker</h2>
-
-                    <nav>
-                        <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                                isActive ? "nav-link active" : "nav-link"
-                            }
-                        >
-                            Home
-                        </NavLink>
-
-                        <NavLink
-                            to="/tasks"
-                            className={({ isActive }) =>
-                                isActive ? "nav-link active" : "nav-link"
-                            }
-                        >
-                            Tasks
-                        </NavLink>
-
-                        {isAuthenticated && (
-                            <NavLink
-                                to="/logs"
-                                className={({ isActive }) =>
-                                    isActive ? "nav-link active" : "nav-link"
-                                }
+        <>
+            <header className="eco-header">
+                <div className="eco-header-inner">
+                    {/* Brand */}
+                    <button
+                        className="eco-brand"
+                        onClick={() => navigate("/")}
+                        type="button"
+                    >
+                        <div className="eco-brand-icon">
+                            <span
+                                className="material-symbols-outlined"
+                                style={{ fontVariationSettings: "'FILL' 1", fontSize: "18px" }}
                             >
-                                History
-                            </NavLink>
-                        )}
-                    </nav>
-                </div>
+                                eco
+                            </span>
+                        </div>
+                        <div>
+                            <div className="eco-brand-name">GreenFood</div>
+                            <div className="eco-brand-sub">即期食物銷售平台</div>
+                        </div>
+                    </button>
 
-                <WalletConnectPanel />
-            </div>
-        </header>
+                    {/* Right side only — nav moved to sidebar */}
+                    <div className="eco-header-right">
+                        <PlatformCoinBadge />
+                        <WalletConnectPanel />
+                    </div>
+                </div>
+            </header>
+            <div style={{ height: "72px" }} />
+        </>
     );
 };
 

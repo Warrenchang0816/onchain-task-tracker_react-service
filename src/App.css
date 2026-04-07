@@ -182,3 +182,533 @@
         border-right-color: var(--border);
     }
 }
+
+.eco-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 72px;
+    background: rgba(247, 250, 248, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 34, 1, 0.06);
+    border-bottom: 1px solid rgba(194, 201, 187, 0.4);
+}
+
+.eco-header-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.eco-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.eco-brand-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    background: var(--eco-primary);
+    color: var(--eco-primary-fixed);
+    display: grid;
+    place-items: center;
+}
+
+.eco-brand-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--eco-primary);
+    letter-spacing: -0.02em;
+}
+
+.eco-brand-sub {
+    font-size: 0.75rem;
+    color: var(--eco-outline);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.eco-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    justify-content: center;
+}
+
+.eco-nav-link {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--eco-on-surface);
+    padding: 10px 12px;
+    border-radius: 12px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.eco-nav-link:hover {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.eco-nav-link--active {
+    background: rgba(50, 107, 0, 0.12);
+    color: var(--eco-secondary);
+}
+
+.eco-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.eco-header-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--eco-surface-container);
+    border: 1px solid rgba(110, 231, 183, 0.25);
+}
+
+.eco-header-search input {
+    border: none;
+    outline: none;
+    font: inherit;
+    width: 180px;
+    background: transparent;
+    color: var(--eco-on-surface);
+}
+
+.eco-icon-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--eco-on-surface);
+}
+
+.eco-auth-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 2px solid var(--eco-surface-container);
+}
+
+.eco-mobile-toggle {
+    display: none;
+}
+
+.eco-mobile-menu {
+    display: none;
+}
+
+.eco-task-board-page {
+    min-height: calc(100vh - 72px);
+    padding: 24px;
+    background: var(--eco-surface);
+}
+
+.eco-page-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.eco-sidebar {
+    display: flex;
+    flex-direction: column;
+    background: var(--eco-surface-white);
+    border-radius: 24px;
+    padding: 24px;
+    min-height: min-content;
+    gap: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.eco-sidebar-top {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.eco-brand-icon-mini {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    background: var(--eco-primary);
+    color: var(--eco-primary-fixed);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 18px 40px rgba(21, 66, 18, 0.12);
+}
+
+.eco-sidebar-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--eco-primary);
+}
+
+.eco-sidebar-sub {
+    font-size: 0.75rem;
+    color: var(--eco-outline);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.eco-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.eco-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--eco-surface-container);
+    color: var(--eco-on-surface);
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.eco-sidebar-link:hover,
+.eco-sidebar-link--active {
+    background: var(--eco-surface-container-high);
+    border-color: rgba(50, 107, 0, 0.15);
+}
+
+.eco-sidebar-link.compact {
+    padding: 12px 14px;
+    justify-content: flex-start;
+    font-weight: 600;
+}
+
+.eco-sidebar-action {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: none;
+    background: var(--eco-primary);
+    color: var(--eco-on-primary);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 18px 40px rgba(21, 66, 18, 0.12);
+}
+
+.eco-sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(114, 121, 110, 0.12);
+}
+
+.eco-board-main {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.eco-board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    padding: 20px 24px;
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.06);
+}
+
+.eco-heading {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 3rem);
+    color: var(--eco-primary);
+}
+
+.eco-subtitle {
+    margin: 0;
+    color: var(--eco-on-surface-variant);
+    font-size: 0.95rem;
+}
+
+.eco-avatar-stack {
+    display: flex;
+    align-items: center;
+    gap: -10px;
+}
+
+.eco-avatar,
+.eco-avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 4px solid var(--eco-surface-container-low);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.eco-avatar-more {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: var(--eco-primary-fixed);
+    color: var(--eco-on-primary-fixed);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    border: 4px solid var(--eco-surface-container-low);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.eco-board-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.eco-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.eco-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.eco-column-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--eco-on-surface);
+}
+
+.eco-column-badge {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.eco-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--eco-surface-container-highest);
+    color: var(--eco-on-surface);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.eco-card {
+    background: white;
+    border-radius: 22px;
+    border: 1px solid transparent;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eco-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.eco-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.eco-card-tag {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #166534;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.eco-card-dots {
+    font-size: 20px;
+    color: var(--eco-outline);
+    cursor: pointer;
+}
+
+.eco-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--eco-on-surface);
+    line-height: 1.4;
+}
+
+.eco-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.eco-card-progress {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--eco-surface-container);
+    overflow: hidden;
+}
+
+.eco-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--eco-secondary), var(--eco-primary));
+}
+
+.eco-card-meta {
+    font-size: 0.85rem;
+    color: var(--eco-on-surface-variant);
+}
+
+.eco-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.eco-card-note {
+    font-size: 0.85rem;
+    color: var(--eco-on-surface-variant);
+    font-weight: 600;
+}
+
+.eco-column-add {
+    margin-top: auto;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px dashed var(--eco-outline-var);
+    background: rgba(247, 250, 248, 0.75);
+    color: var(--eco-on-surface);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.eco-mobile-bottom-nav {
+    display: none;
+}
+
+.eco-mobile-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 0;
+    color: var(--eco-on-surface);
+    font-size: 0.7rem;
+    min-width: 64px;
+}
+
+.eco-mobile-item--primary {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    background: var(--eco-secondary);
+    color: white;
+    box-shadow: 0 18px 36px rgba(50, 107, 0, 0.2);
+}
+
+.eco-mobile-item.active {
+    color: var(--eco-secondary);
+}
+
+@media (max-width: 1240px) {
+    .eco-page-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .eco-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .eco-board-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .eco-board-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .eco-task-board-page {
+        padding-bottom: 110px;
+    }
+
+    .eco-mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        justify-content: space-around;
+        align-items: center;
+        padding: 12px 20px 20px;
+        gap: 8px;
+        background: rgba(247, 250, 248, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(114, 121, 110, 0.12);
+        z-index: 50;
+    }
+}

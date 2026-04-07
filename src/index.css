@@ -115,6 +115,24 @@ code {
     box-sizing: border-box;
 } */
 
+/* ── Stitch EcoTracker Design Tokens ────────────────────────────────────────── */
+:root {
+    --eco-primary:        #154212;
+    --eco-secondary:      #326b00;
+    --eco-primary-fixed:  #bcf0ae;
+    --eco-primary-dim:    #a1d494;
+    --eco-secondary-container: #aef67b;
+    --eco-surface:        #f7faf8;
+    --eco-surface-low:    #f1f4f2;
+    --eco-surface-container: #ebefed;
+    --eco-surface-white:  #ffffff;
+    --eco-on-surface:     #181c1b;
+    --eco-on-surface-var: #42493e;
+    --eco-outline:        #72796e;
+    --eco-outline-var:    #c2c9bb;
+    --eco-error:          #ba1a1a;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -129,8 +147,9 @@ body,
 
 body {
     font-family: 'Inter', Arial, sans-serif;
-    background: #f5f7fb;
-    color: #1f2937;
+    background: var(--eco-surface);
+    color: var(--eco-on-surface);
+    -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -142,44 +161,177 @@ button {
     border: none;
     border-radius: 8px;
     padding: 10px 16px;
-    background: #111827;
+    background: var(--eco-primary);
     color: white;
     cursor: pointer;
     font-size: 14px;
+    font-family: inherit;
 }
 
 button:hover {
     opacity: 0.92;
 }
 
-header {
-    background: #111827;
-    color: white;
-    padding: 16px 24px;
-}
-
-header > div {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-nav {
-    display: flex;
-    gap: 16px;
-    margin-top: 8px;
-}
-
+/* shell-main handles its own padding; plain main kept for legacy AppLayout pages */
 main {
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 32px 48px;
 }
 
-@media (max-width: 1024px) {
-    main {
-        padding: 24px 20px;
-    }
+/* ── Header (Stitch glassmorphism nav) ──────────────────────────────────────── */
+.eco-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 72px;
+    background: rgba(247, 250, 248, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 34, 1, 0.06);
+    border-bottom: 1px solid rgba(194, 201, 187, 0.4);
+}
+
+.eco-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+/* Brand */
+.eco-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.eco-brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--eco-primary);
+    color: var(--eco-primary-fixed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eco-brand-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--eco-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.eco-brand-sub {
+    font-size: 10px;
+    color: var(--eco-outline);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* Desktop nav links */
+.eco-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.eco-nav-link {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--eco-on-surface-var);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.eco-nav-link:hover {
+    color: var(--eco-primary);
+    background: rgba(21, 66, 18, 0.06);
+}
+
+.eco-nav-link--active {
+    color: var(--eco-primary);
+    font-weight: 700;
+    background: rgba(21, 66, 18, 0.08);
+}
+
+/* Right side */
+.eco-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Mobile toggle */
+.eco-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 6px;
+    color: var(--eco-on-surface-var);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.eco-mobile-toggle:hover {
+    background: rgba(21, 66, 18, 0.06);
+    opacity: 1;
+}
+
+/* Mobile dropdown */
+.eco-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px 16px;
+    gap: 2px;
+    background: rgba(247, 250, 248, 0.98);
+    border-top: 1px solid var(--eco-outline-var);
+}
+
+.eco-mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--eco-on-surface-var);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.eco-mobile-link:hover {
+    background: rgba(21, 66, 18, 0.06);
+    color: var(--eco-primary);
+}
+
+.eco-mobile-link--active {
+    background: rgba(21, 66, 18, 0.1);
+    color: var(--eco-primary);
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .eco-nav { display: none; }
+    .eco-mobile-toggle { display: flex; }
+    .eco-header { height: auto; min-height: 64px; }
 }
 
 .hero-section {
@@ -957,4 +1109,565 @@ main {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* ── Footer eco theme ───────────────────────────────────────────────────────── */
+.app-footer {
+    background: var(--eco-surface-low);
+    border-top: 1px solid var(--eco-outline-var);
+}
+.app-footer-title { color: var(--eco-primary); }
+.app-footer-links a:hover { color: var(--eco-primary); }
+
+/* ── Header extras (search, icon buttons, avatar) ───────────────────────────── */
+.eco-header-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--eco-surface-container);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--eco-outline);
+}
+
+.eco-header-search input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: var(--eco-on-surface);
+    width: 180px;
+    font-family: inherit;
+    padding: 0;
+}
+
+.eco-header-search .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--eco-outline);
+}
+
+.eco-icon-button {
+    background: none;
+    border: none;
+    padding: 7px;
+    border-radius: 999px;
+    color: var(--eco-on-surface-var);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.eco-icon-button:hover {
+    background: rgba(21, 66, 18, 0.07);
+    opacity: 1;
+}
+
+.eco-auth-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--eco-primary-fixed);
+    object-fit: cover;
+}
+
+/* ── Shell layout (persistent sidebar across all pages) ─────────────────────── */
+.eco-shell {
+    display: flex;
+    height: calc(100vh - 72px);
+    overflow: hidden;
+}
+
+.eco-shell-main {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--eco-surface-low);
+    padding: 32px 40px;
+}
+
+@media (max-width: 768px) {
+    .eco-shell-main { padding: 20px 16px; }
+}
+
+/* ── Task board page layout ─────────────────────────────────────────────────── */
+
+/* Pull the kanban page out of main's padding */
+.eco-task-board-page {
+    margin: -32px -48px;
+}
+
+@media (max-width: 1024px) {
+    .eco-task-board-page { margin: -24px -20px; }
+}
+
+.eco-page-layout {
+    display: flex;
+    height: calc(100vh - 72px);
+    overflow: hidden;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────────── */
+.eco-sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 24px 16px;
+    background: #fafbfa;
+    border-right: 1px solid var(--eco-outline-var);
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) { .eco-sidebar { display: none; } }
+
+.eco-sidebar-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 20px;
+    border-bottom: 1px solid var(--eco-outline-var);
+    margin-bottom: 8px;
+}
+
+.eco-brand-icon-mini {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--eco-primary);
+    color: var(--eco-primary-fixed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.eco-brand-icon-mini .material-symbols-outlined {
+    font-size: 20px;
+    font-variation-settings: 'FILL' 1;
+}
+
+.eco-sidebar-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--eco-primary);
+    line-height: 1.1;
+}
+
+.eco-sidebar-sub {
+    font-size: 10px;
+    color: var(--eco-outline);
+    letter-spacing: 0.04em;
+}
+
+.eco-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.eco-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    color: var(--eco-on-surface-var);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s, background 0.15s, transform 0.15s;
+    width: 100%;
+}
+
+.eco-sidebar-link:hover {
+    color: var(--eco-primary);
+    background: rgba(21, 66, 18, 0.06);
+    transform: translateX(2px);
+    opacity: 1;
+}
+
+.eco-sidebar-link--active {
+    background: rgba(21, 66, 18, 0.1);
+    color: var(--eco-primary);
+}
+
+.eco-sidebar-link.compact { padding: 8px 12px; }
+
+.eco-sidebar-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--eco-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 4px 12px rgba(21, 66, 18, 0.25);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.eco-sidebar-action:hover {
+    box-shadow: 0 6px 20px rgba(21, 66, 18, 0.35);
+    transform: translateY(-1px);
+    opacity: 1;
+}
+
+.eco-sidebar-footer {
+    padding-top: 12px;
+    border-top: 1px solid var(--eco-outline-var);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ── Board main area ────────────────────────────────────────────────────────── */
+.eco-board-main {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding: 32px;
+    background: var(--eco-surface-low);
+}
+
+.eco-board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.eco-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--eco-primary);
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+}
+
+.eco-subtitle {
+    font-size: 13px;
+    color: var(--eco-on-surface-var);
+    margin: 0;
+}
+
+/* Avatar stack */
+.eco-avatar-stack {
+    display: flex;
+    align-items: center;
+}
+
+.eco-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid var(--eco-surface-low);
+    object-fit: cover;
+    margin-left: -10px;
+}
+
+.eco-avatar:first-child { margin-left: 0; }
+
+.eco-avatar-more {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid var(--eco-surface-low);
+    background: var(--eco-primary-fixed);
+    color: var(--eco-primary);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -10px;
+}
+
+/* ── Kanban grid ────────────────────────────────────────────────────────────── */
+.eco-board-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 20px;
+    align-items: start;
+    overflow-x: auto;
+}
+
+/* ── Column ─────────────────────────────────────────────────────────────────── */
+.eco-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eco-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 8px;
+}
+
+.eco-column-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--eco-on-surface-var);
+}
+
+.eco-column-badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.eco-pill {
+    background: var(--eco-surface-container);
+    color: var(--eco-on-surface-var);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────────── */
+.eco-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 18px;
+    border-bottom: 3px solid #e5e7eb;
+    box-shadow: 0 2px 12px rgba(0, 34, 1, 0.04);
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.eco-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 34, 1, 0.09);
+}
+
+.eco-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.eco-card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.eco-card-dots {
+    font-size: 20px;
+    color: var(--eco-outline-var);
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.eco-card-dots:hover { color: var(--eco-primary); }
+
+.eco-card-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--eco-on-surface);
+    line-height: 1.4;
+    margin: 0 0 14px;
+}
+
+.eco-card-body { display: flex; flex-direction: column; gap: 8px; }
+
+/* Progress bar */
+.eco-card-progress {
+    height: 6px;
+    background: var(--eco-surface-container);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.eco-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--eco-secondary), var(--eco-primary));
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+.eco-card-meta {
+    font-size: 11px;
+    color: var(--eco-outline);
+    font-weight: 500;
+}
+
+.eco-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.eco-avatar-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid var(--eco-outline-var);
+}
+
+.eco-card-note {
+    font-size: 11px;
+    color: var(--eco-outline);
+    font-weight: 500;
+}
+
+/* Add task button */
+.eco-column-add {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed var(--eco-outline-var);
+    background: none;
+    border-radius: 12px;
+    color: var(--eco-outline);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.eco-column-add:hover {
+    border-color: var(--eco-secondary);
+    color: var(--eco-secondary);
+    background: rgba(50, 107, 0, 0.04);
+    opacity: 1;
+}
+
+/* ── Mobile bottom nav ──────────────────────────────────────────────────────── */
+.eco-mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: rgba(247, 250, 248, 0.95);
+    backdrop-filter: blur(20px);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -8px 32px rgba(0, 34, 1, 0.08);
+    padding: 12px 24px 20px;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .eco-mobile-bottom-nav { display: flex; }
+}
+
+.eco-mobile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--eco-outline);
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.eco-mobile-item:hover,
+.eco-mobile-item.active {
+    color: var(--eco-primary);
+    opacity: 1;
+}
+
+.eco-mobile-item--primary {
+    background: var(--eco-primary);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+    margin-bottom: 4px;
+    box-shadow: 0 4px 12px rgba(21, 66, 18, 0.3);
+}
+
+.eco-mobile-item--primary:hover {
+    color: white;
+    background: var(--eco-secondary);
+}
+
+/* ── Embedded iframe (sidebar page view) ────────────────────────────────────── */
+.eco-embedded-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    background: var(--eco-surface);
+    display: block;
+}
+
+/* ── Global eco theme overrides ─────────────────────────────────────────────── */
+
+/* Green active state for filter buttons */
+.filter-button.active {
+    background: var(--eco-primary);
+    border-color: var(--eco-primary);
+}
+
+/* Green focus ring on form inputs */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus,
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+    border-color: var(--eco-secondary);
+    box-shadow: 0 0 0 3px rgba(50, 107, 0, 0.12);
+}
+
+/* Page container (non-kanban pages) */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
 }

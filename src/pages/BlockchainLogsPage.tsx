@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AppLayout from "../layouts/AppLayout";
+import SidebarLayout from "../layouts/SidebarLayout";
 import { getBlockchainLogs, type BlockchainLog } from "../api/taskApi";
 import { getAuthMe } from "../api/authApi";
 
@@ -48,7 +48,7 @@ const BlockchainLogsPage = () => {
     const successRate = totalLogs > 0 ? Math.round((successLogs / totalLogs) * 100) : 0;
 
     return (
-        <AppLayout>
+        <SidebarLayout>
             <div className="page-container">
                 <div className="page-heading page-heading-row">
                     <div>
@@ -132,7 +132,7 @@ const BlockchainLogsPage = () => {
                     </div>
                 )}
             </div>
-        </AppLayout>
+        </SidebarLayout>
     );
 };
 

@@ -23,7 +23,7 @@ import TaskForm from "../components/task/TaskForm";
 import TaskSubmitModal from "../components/task/TaskSubmitModal";
 import FundTaskButton from "../components/task/FundTaskButton";
 import ClaimOnchainButton from "../components/task/ClaimOnchainButton";
-import AppLayout from "../layouts/AppLayout";
+import SidebarLayout from "../layouts/SidebarLayout";
 
 type TaskActionType = "cancel" | "accept" | "approve" | "claim";
 
@@ -219,7 +219,7 @@ const TaskDetailPage = () => {
         : "Are you sure you want to claim this reward?";
 
     return (
-        <AppLayout>
+        <SidebarLayout>
             <section className="page-section">
                 <div className="page-heading page-heading-row">
                     <div>
@@ -423,7 +423,7 @@ const TaskDetailPage = () => {
                 onSubmit={handleSubmitConfirm}
                 onCancel={() => setIsSubmitModalOpen(false)}
             />
-        </AppLayout>
+        </SidebarLayout>
     );
 };
 

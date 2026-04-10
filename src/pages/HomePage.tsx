@@ -45,6 +45,14 @@ const HomePage = () => {
                     <AppButton type="button" onClick={() => navigate("/tasks")}>
                         View Tasks
                     </AppButton>
+
+                    <AppButton type="button" onClick={() => navigate("/nft-tasks")}>
+                        NFT Tasks
+                    </AppButton>
+
+                    <AppButton type="button" onClick={() => navigate("/marketplace")}>
+                        Marketplace
+                    </AppButton>
                 </div>
             </section>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchSIWEMessage, verifySIWE, getAuthMe, logout   } from "@/api/authApi";
-import { toChecksumAddress, signSIWEMessage } from "@/api/walletApi";
-import ConfirmDialog from "@/components/common/ConfirmDialog";
+import { fetchSIWEMessage, verifySIWE, getAuthMe, logout   } from "../../api/authApi";
+import { toChecksumAddress, signSIWEMessage } from "../../api/walletApi";
+import ConfirmDialog from "../common/ConfirmDialog";
 
 declare global {
     interface Window {

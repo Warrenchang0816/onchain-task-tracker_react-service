@@ -33,9 +33,10 @@ interface TaskListPageState {
 }
 
 type TaskFilter = "ALL" | "COMPLETED" | "OPEN";
-
 type TaskModalMode = "create" | "edit";
 type TaskActionType = "cancel" | "accept" | "approve" | "claim";
+
+
 
 const TASK_FILTER_OPTIONS: { label: string; value: TaskFilter }[] = [
     { label: "All", value: "ALL" },
@@ -43,7 +44,8 @@ const TASK_FILTER_OPTIONS: { label: string; value: TaskFilter }[] = [
     { label: "Pending", value: "OPEN" },
 ];
 
-
+const API_BASE_URL =
+    import.meta.env.VITE_API_GO_SERVICE_URL ?? "http://localhost:8081/api";
 
 const TaskListPage = () => {
     const location = useLocation();
@@ -53,6 +55,13 @@ const TaskListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+    const [isNFTOrderModalOpen, setIsNFTOrderModalOpen] = useState(false);
+    const [isNFTOrderSubmitting, setIsNFTOrderSubmitting] = useState(false);
+    const [nftOrderTitle, setNFTOrderTitle] = useState("");
+    const [nftPrice, setNFTPrice] = useState("");
+    const [nftImageFile, setNFTImageFile] = useState<File | null>(null);
+    const [recipientWallet, setRecipientWallet] = useState("");
 
     const [filter, setFilter] = useState<TaskFilter>("ALL");
     const [successMessage, setSuccessMessage] = useState<string>(
@@ -71,6 +80,12 @@ const TaskListPage = () => {
 
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false);
     const [taskPendingSubmit, setTaskPendingSubmit] = useState<Task | null>(null);
+
+    // NFT Order modal states
+    
+    
+    
+    const [nftOrderDescription, setNFTOrderDescription] = useState<string>("");
 
     const { address, isConnected } = useAccount();
 
@@ -259,7 +274,97 @@ const TaskListPage = () => {
             setIsActionLoading(false);
         }
     };
-    
+
+    // NFT Order modal handlers
+    const openNFTOrderModal = () => {
+        if (!canOperateTasks) {
+            return;
+        }
+
+        setNFTOrderTitle("");
+        setNFTOrderDescription("");
+        setIsNFTOrderModalOpen(true);
+    };
+
+    const closeNFTOrderModal = () => {
+        if (isNFTOrderSubmitting) {
+            return;
+        }
+
+        setIsNFTOrderModalOpen(false);
+        setNFTOrderTitle("");
+        setNFTOrderDescription("");
+    };
+
+    const handleNFTOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!nftOrderTitle  || !nftPrice || !recipientWallet) {
+        setErrorMessage("Please fill all required fields");
+        return;
+    }
+
+    try {
+        setIsNFTOrderSubmitting(true);
+
+        let imageUrl = "";
+
+if (nftImageFile) {
+  const formData = new FormData();
+  formData.append("file", nftImageFile);
+
+  const uploadRes = await fetch("http://localhost:8081/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const uploadData = await uploadRes.json();
+
+  if (!uploadRes.ok) {
+    throw new Error(uploadData.message || "圖片上傳失敗");
+  }
+
+  imageUrl = uploadData.url;
+}
+        // 🔥 建立 NFT order
+        const res = await fetch(
+            "http://localhost:8081/api/nft-orders",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: nftOrderTitle,
+                    description: nftOrderDescription,
+                    image: imageUrl,
+                    price: nftPrice,
+                    recipientWallet: recipientWallet,
+                    creatorWallet: address,
+                }),
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message);
+
+        setSuccessMessage("NFT order created!");
+
+        closeNFTOrderModal();
+    } catch (err: any) {
+        setErrorMessage(err.message);
+    } finally {
+        setIsNFTOrderSubmitting(false);
+    }
+};
+        
+
+         
+
+          
+
+   
 
     const actionDialogTitle =
         pendingActionType === "cancel"
@@ -288,109 +393,201 @@ const TaskListPage = () => {
             ? "Approve Task"
             : "Claim Reward";
 
-    return (
-        <AppLayout>
-            <section className="page-section">
-                <div className="page-heading page-heading-row">
-                    <div>
-                        <h1>Tasks</h1>
-                        <p>Review your current on-chain task records.</p>
-                    </div>
+  return (
+    <AppLayout>
+        <section className="page-section">
+            <div className="page-heading page-heading-row">
+                <div>
+                    <h1>Tasks</h1>
+                    <p>Review your current on-chain task records.</p>
+                </div>
 
-                    {!isAuthLoading && canOperateTasks ? (
+                {!isAuthLoading ? (
+                    <div className="page-actions" style={{ display: "flex", gap: "12px" }}>
                         <AppButton type="button" onClick={openCreateModal}>
                             Create Task
                         </AppButton>
-                    ) : null}
+
+                        <AppButton type="button" onClick={openNFTOrderModal}>
+                            Create NFT Order
+                        </AppButton>
+                    </div>
+                ) : null}
+            </div>
+
+            {successMessage ? (
+                <div className="feedback-banner success-banner">
+                    <p>{successMessage}</p>
                 </div>
+            ) : null}
 
-                {successMessage ? (
-                    <div className="feedback-banner success-banner">
-                        <p>{successMessage}</p>
-                    </div>
-                ) : null}
+            {errorMessage ? (
+                <div className="feedback-banner error-banner">
+                    <p>{errorMessage}</p>
+                </div>
+            ) : null}
 
-                {errorMessage ? (
-                    <div className="feedback-banner error-banner">
-                        <p>{errorMessage}</p>
-                    </div>
-                ) : null}
+            <FilterTabs
+                options={TASK_FILTER_OPTIONS}
+                value={filter}
+                onChange={setFilter}
+            />
 
-                <FilterTabs
-                    options={TASK_FILTER_OPTIONS}
-                    value={filter}
-                    onChange={setFilter}
+            {isLoading || isAuthLoading ? (
+                <PageLoading message="Loading tasks..." />
+            ) : filteredTasks.length === 0 ? (
+                <EmptyState
+                    title="No matching tasks"
+                    description={
+                        isAuthenticated
+                            ? "Try another filter or create a new task."
+                            : "Browse the current tasks. Login to create or edit tasks."
+                    }
                 />
+            ) : (
+                <div className="task-list">
+                    {filteredTasks.map((task) => (
+                        <div key={task.id} className="task-list-item">
+                            <TaskCard
+                                task={task}
+                                onEdit={canOperateTasks && task.canEdit ? openEditModal : undefined}
+                                onDelete={canOperateTasks && task.canCancel ? (target) => openActionDialog(target, "cancel") : undefined}
+                                onAccept={canOperateTasks && task.canAccept ? (target) => openActionDialog(target, "accept") : undefined}
+                                onSubmit={canOperateTasks && task.canSubmit ? openSubmitModal : undefined}
+                                onApprove={canOperateTasks && task.canApprove ? (target) => openActionDialog(target, "approve") : undefined}
+                                onClaim={canOperateTasks && task.canClaim && !task.canClaimOnchain ? (target) => openActionDialog(target, "claim") : undefined}
+                            />
 
-                {isLoading || isAuthLoading ? (
-                    <PageLoading message="Loading tasks..." />
-                ) : filteredTasks.length === 0 ? (
-                    <EmptyState
-                        title="No matching tasks"
-                        description={
-                            isAuthenticated
-                                ? "Try another filter or create a new task."
-                                : "Browse the current tasks. Login to create or edit tasks."
-                        }
-                    />
-                ) : (
-                    <div className="task-list">
-                        {filteredTasks.map((task) => (
-                            <div key={task.id} className="task-list-item">
-                                <TaskCard
-                                    task={task}
-                                    onEdit={canOperateTasks && task.canEdit ? openEditModal : undefined}
-                                    onDelete={canOperateTasks && task.canCancel ? (target) => openActionDialog(target, "cancel") : undefined}
-                                    onAccept={canOperateTasks && task.canAccept ? (target) => openActionDialog(target, "accept") : undefined}
-                                    onSubmit={canOperateTasks && task.canSubmit ? openSubmitModal : undefined}
-                                    onApprove={canOperateTasks && task.canApprove ? (target) => openActionDialog(target, "approve") : undefined}
-                                    onClaim={canOperateTasks && task.canClaim && !task.canClaimOnchain ? (target) => openActionDialog(target, "claim") : undefined}
-                                />
-
-                                {task.status === "SUBMITTED" && task.isOwner && !task.canApprove && Number(task.rewardAmount) > 0 && (
+                            {task.status === "SUBMITTED" &&
+                                task.isOwner &&
+                                !task.canApprove &&
+                                Number(task.rewardAmount) > 0 && (
                                     <div className="task-onchain-actions">
                                         <span className="task-flow-hint">
-                                            {task.onchainStatus === "NOT_FUNDED" ? "⚠ 需先在詳情頁完成 Fund 才能 Approve" : "⚠ 等待鏈上 Assign 完成才能 Approve"}
+                                            {task.onchainStatus === "NOT_FUNDED"
+                                                ? "⚠ 需先在詳情頁完成 Fund 才能 Approve"
+                                                : "⚠ 等待鏈上 Assign 完成才能 Approve"}
                                         </span>
                                     </div>
                                 )}
-                            </div>
-                        ))}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </section>
+
+        {/* Task Modal */}
+        <AppModal
+            isOpen={isTaskModalOpen}
+            title={taskModalMode === "create" ? "Create Task" : "Edit Task"}
+            onClose={closeTaskModal}
+        >
+            <TaskForm
+                mode={taskModalMode}
+                initialTask={selectedTask}
+                onSubmit={handleTaskSubmit}
+                onCancel={closeTaskModal}
+            />
+        </AppModal>
+
+        {/* NFT Order Modal */}
+        <AppModal
+            isOpen={isNFTOrderModalOpen}
+            title="Create NFT Order"
+            onClose={closeNFTOrderModal}
+        >
+            <form onSubmit={handleNFTOrderSubmit}>
+                <div style={{ display: "grid", gap: "16px" }}>
+
+                    <div>
+                        <label>NFT Name</label>
+                        <input
+                            value={nftOrderTitle}
+                            onChange={(e) =>  setNFTOrderTitle(e.target.value)}
+                            placeholder="Concert Ticket #1"
+                        />
                     </div>
-                )}
-            </section>
 
-            <AppModal
-                isOpen={isTaskModalOpen}
-                title={taskModalMode === "create" ? "Create Task" : "Edit Task"}
-                onClose={closeTaskModal}
-            >
-                <TaskForm
-                    mode={taskModalMode}
-                    initialTask={selectedTask}
-                    onSubmit={handleTaskSubmit}
-                    onCancel={closeTaskModal}
-                />
-            </AppModal>
+                    <div>
+                        <label>Description</label>
+                        <textarea
+                            value={nftOrderDescription}
+                            onChange={(e) => setNFTOrderDescription(e.target.value)}
+                            placeholder="VIP Concert Ticket"
+                        />
+                    </div>
 
-            <ConfirmDialog
-                isOpen={isActionDialogOpen}
-                title={actionDialogTitle}
-                description={actionDialogDescription}
-                confirmText={actionDialogConfirmText}
-                cancelText="Back"
-                isLoading={isActionLoading}
-                onConfirm={handleActionConfirm}
-                onCancel={closeActionDialog}
-            />
+                    <div>
+                        <label>Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) =>
+                                setNFTImageFile(e.target.files?.[0] || null)
+                            }
+                        />
+                    </div>
 
-            <TaskSubmitModal
-                isOpen={isSubmitModalOpen}
-                onSubmit={handleSubmitConfirm}
-                onCancel={closeSubmitModal}
-            />
-        </AppLayout>
-    );
+                    <div>
+                        <label>Price (ETH)</label>
+                        <input
+                            value={nftPrice}
+                            onChange={(e) => setNFTPrice(e.target.value)}
+                            placeholder="0.05"
+                        />
+                    </div>
+
+                    <div>
+                        <label>Recipient Wallet</label>
+                        <input
+                            value={recipientWallet}
+                            onChange={(e) => setRecipientWallet(e.target.value)}
+                            placeholder="0x..."
+                        />
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+                        <AppButton
+                            type="button"
+                            onClick={closeNFTOrderModal}
+                            disabled={isNFTOrderSubmitting}
+                        >
+                            Cancel
+                        </AppButton>
+
+                        <AppButton
+                            type="submit"
+                            disabled={isNFTOrderSubmitting}
+                        >
+                            {isNFTOrderSubmitting ? "Creating..." : "Create NFT Order"}
+                        </AppButton>
+                    </div>
+
+                </div>
+            </form>
+        </AppModal>
+
+        {/* Confirm Dialog */}
+        <ConfirmDialog
+            isOpen={isActionDialogOpen}
+            title={actionDialogTitle}
+            description={actionDialogDescription}
+            confirmText={actionDialogConfirmText}
+            cancelText="Back"
+            isLoading={isActionLoading}
+            onConfirm={handleActionConfirm}
+            onCancel={closeActionDialog}
+        />
+
+        {/* Submit Modal */}
+        <TaskSubmitModal
+            isOpen={isSubmitModalOpen}
+            onSubmit={handleSubmitConfirm}
+            onCancel={closeSubmitModal}
+        />
+
+    </AppLayout>
+);  
 };
 
 export default TaskListPage;

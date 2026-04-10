@@ -12,14 +12,23 @@ interface FundTaskButtonProps {
     onSuccess?: () => Promise<void> | void;
 }
 
+const API_BASE_URL =
+    import.meta.env.VITE_API_GO_SERVICE_URL ?? "http://localhost:8081/api";
+
 const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
     const { address } = useAccount();
     const { writeContractAsync, isPending } = useWriteContract();
+
     const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const syncedRef = useRef(false);
 
-    const { isSuccess: isReceiptSuccess, isLoading: isWaitingReceipt } = useWaitForTransactionReceipt({
+    const {
+        isSuccess: isReceiptSuccess,
+        isLoading: isWaitingReceipt,
+        isError: isReceiptError,
+        error: receiptError,
+    } = useWaitForTransactionReceipt({
         hash: txHash,
     });
 
@@ -35,7 +44,7 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
 
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_API_GO_SERVICE_URL}/tasks/${task.id}/onchain/funded`,
+                    `${API_BASE_URL}/tasks/${task.id}/onchain/funded`,
                     {
                         method: "POST",
                         credentials: "include",
@@ -46,35 +55,55 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
 
                 if (!res.ok) {
                     const body = await res.text();
-                    setErrorMessage(`鏈上交易已成功（${txHash}），但 DB 同步失敗（${res.status}）：${body}。請截圖並聯繫管理員。`);
+                    setErrorMessage(
+                        `鏈上交易已成功（${txHash}），但 DB 同步失敗（${res.status}）：${body}。請截圖並聯繫管理員。`
+                    );
                     return;
                 }
 
+                setErrorMessage("");
+                setTxHash(undefined);
                 await onSuccess?.();
             } catch (err) {
-                setErrorMessage(`鏈上交易已成功（${txHash}），但 DB 同步請求失敗：${err instanceof Error ? err.message : String(err)}。請截圖並聯繫管理員。`);
+                setErrorMessage(
+                    `鏈上交易已成功（${txHash}），但 DB 同步請求失敗：${
+                        err instanceof Error ? err.message : String(err)
+                    }。請截圖並聯繫管理員。`
+                );
             }
         };
 
         void syncFunded();
     }, [txHash, isReceiptSuccess, task.id, onSuccess]);
 
-    // Vault contract not configured — hide silently
+    useEffect(() => {
+        if (!isReceiptError) return;
+
+        setErrorMessage(
+            `交易已送出，但確認失敗：${
+                receiptError instanceof Error ? receiptError.message : "unknown error"
+            }`
+        );
+    }, [isReceiptError, receiptError]);
+
     if (!isAddress(REWARD_VAULT_ADDRESS)) {
         return null;
     }
 
-    // Backend controls visibility: only show when canFund is true
     if (!task.canFund) {
         return null;
     }
 
     const handleFund = async () => {
-        if (!address) return;
+        if (!address) {
+            setErrorMessage("請先連接錢包。");
+            return;
+        }
 
         try {
             setErrorMessage("");
             syncedRef.current = false;
+            setTxHash(undefined);
 
             const hash = await writeContractAsync({
                 address: REWARD_VAULT_ADDRESS as `0x${string}`,
@@ -87,12 +116,23 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
             setTxHash(hash);
         } catch (error) {
             const msg = error instanceof Error ? error.message : "Transaction failed.";
-            // "task exists" means tx landed on-chain but DB sync failed previously
-            if (msg.includes("task exists")) {
-                setErrorMessage("合約已收到此任務的資金，但 DB 尚未同步。請聯繫管理員手動更新 onchain_status。");
-            } else {
-                setErrorMessage(msg);
+            const normalized = msg.toLowerCase();
+
+            if (
+                normalized.includes("user rejected") ||
+                normalized.includes("user denied") ||
+                normalized.includes("rejected the request")
+            ) {
+                setErrorMessage("你已取消交易。");
+                return;
             }
+
+            if (normalized.includes("task exists")) {
+                setErrorMessage("合約已收到此任務的資金，但 DB 尚未同步。請聯繫管理員手動更新 onchain_status。");
+                return;
+            }
+
+            setErrorMessage(msg);
         }
     };
 

@@ -31,6 +31,24 @@ export interface AuthLogoutResponse {
     success: boolean;
 }
 
+async function parseErrorMessage(response: Response, fallbackMessage: string): Promise<string> {
+    try {
+        const data = await response.json();
+
+        if (typeof data?.error === "string" && data.error.trim() !== "") {
+            return data.error;
+        }
+
+        if (typeof data?.message === "string" && data.message.trim() !== "") {
+            return data.message;
+        }
+
+        return fallbackMessage;
+    } catch {
+        return fallbackMessage;
+    }
+}
+
 export async function fetchSIWEMessage(
     payload: SIWEMessageRequest
 ): Promise<SIWEMessageResponse> {
@@ -44,7 +62,9 @@ export async function fetchSIWEMessage(
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch SIWE message.");
+        throw new Error(
+            await parseErrorMessage(response, "Failed to fetch SIWE message.")
+        );
     }
 
     return response.json();
@@ -63,7 +83,9 @@ export async function verifySIWE(
     });
 
     if (!response.ok) {
-        throw new Error("Failed to verify SIWE signature.");
+        throw new Error(
+            await parseErrorMessage(response, "Failed to verify SIWE signature.")
+        );
     }
 
     return response.json();
@@ -76,7 +98,9 @@ export async function getAuthMe(): Promise<AuthMeResponse> {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch auth status.");
+        throw new Error(
+            await parseErrorMessage(response, "Failed to fetch auth status.")
+        );
     }
 
     return response.json();
@@ -89,7 +113,9 @@ export async function logout(): Promise<AuthLogoutResponse> {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to logout.");
+        throw new Error(
+            await parseErrorMessage(response, "Failed to logout.")
+        );
     }
 
     return response.json();

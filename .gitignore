@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+green_food.env
 .env
 .claude/settings.local.json

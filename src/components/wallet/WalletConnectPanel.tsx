@@ -383,13 +383,21 @@ const WalletConnectPanel = () => {
     };
 
     if (!isReady) {
-        return <div>Loading wallet...</div>;
+        return (
+            <div className="wallet-address-display">
+                <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}>
+                    Initializing...
+                </span>
+            </div>
+        );
     }
 
     if (!window.ethereum) {
         return (
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>MetaMask 未安裝</span>
+            <div className="wallet-address-display">
+                <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--red)" }}>
+                    MetaMask 未安裝
+                </span>
             </div>
         );
     }
@@ -399,55 +407,80 @@ const WalletConnectPanel = () => {
             {!address && (
                 <button
                     type="button"
+                    className="wallet-connect-btn"
                     onClick={handleConnect}
                     disabled={isConnecting}
                 >
-                    {isConnecting ? "Connecting..." : "Connect MetaMask"}
+                    <span className="material-symbols-outlined" style={{ fontSize: 15 }}>account_balance_wallet</span>
+                    {isConnecting ? "Connecting..." : "Connect Wallet"}
                 </button>
             )}
 
             {address && (
                 <>
-                    <span>{shortAddress(address)}</span>
-                    <span>{getChainLabel(chainId)}</span>
-                    <span>
-                        {isAuthenticated ? "Authenticated" : "Wallet Connected"}
-                    </span>
+                    <div className="wallet-address-display">
+                        <span className="wallet-connected-dot" />
+                        <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-dim)" }}>
+                            {shortAddress(address)}
+                        </span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-dim)", opacity: 0.7 }}>
+                            [{getChainLabel(chainId)}]
+                        </span>
+                    </div>
+
+                    {isWrongNetwork(chainId) && (
+                        <button
+                            type="button"
+                            className="wallet-connect-btn"
+                            onClick={handleSwitchToSepolia}
+                            style={{ color: "var(--amber)", borderColor: "rgba(255,216,110,0.4)" }}
+                        >
+                            Switch Network
+                        </button>
+                    )}
 
                     {!isAuthenticated && !isWrongNetwork(chainId) && (
                         <button
                             type="button"
+                            className="wallet-connect-btn"
                             onClick={handleSignIn}
                             disabled={isSigningIn}
                         >
-                            {isSigningIn ? "Signing..." : "Sign to Login"}
+                            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>fingerprint</span>
+                            {isSigningIn ? "Signing..." : "Sign In"}
                         </button>
                     )}
-
-                    <button
-                        type="button"
-                        onClick={handleDisconnect}
-                        disabled={isDisconnecting}
-                    >
-                        {isDisconnecting ? "Disconnecting..." : "Disconnect"}
-                    </button>
 
                     {isAuthenticated && (
                         <button
                             type="button"
+                            className="wallet-disconnect-btn"
                             onClick={() => setIsLogoutConfirmOpen(true)}
                             disabled={isDisconnecting}
                         >
                             Logout
                         </button>
                     )}
+
+                    {!isAuthenticated && (
+                        <button
+                            type="button"
+                            className="wallet-disconnect-btn"
+                            onClick={handleDisconnect}
+                            disabled={isDisconnecting}
+                        >
+                            {isDisconnecting ? "..." : "Disconnect"}
+                        </button>
+                    )}
                 </>
             )}
 
             {errorMessage && (
-                <span style={{ color: "red" }}>{errorMessage}</span>
+                <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--red)", maxWidth: 160 }}>
+                    {errorMessage}
+                </span>
             )}
-            
+
             <ConfirmDialog
                 isOpen={isLogoutConfirmOpen}
                 title="Logout"
@@ -458,7 +491,6 @@ const WalletConnectPanel = () => {
                 onCancel={() => setIsLogoutConfirmOpen(false)}
             />
         </div>
-        
     );
 };
 

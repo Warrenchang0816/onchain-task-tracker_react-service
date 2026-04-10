@@ -10,7 +10,6 @@ import TaskCard from "../components/task/TaskCard";
 import AppLayout from "../layouts/AppLayout";
 import type { Task } from "../types/task";
 
-
 const HomePage = () => {
     const navigate = useNavigate();
 
@@ -36,48 +35,65 @@ const HomePage = () => {
     return (
         <AppLayout>
             <section className="hero-section">
-                <h1>Manage your on-chain tasks with clarity</h1>
-                <p>
-                    建立任務、追蹤完成狀態，並完成鏈上獎勵結算。
-                </p>
-
-                <div className="hero-actions">
-                    <AppButton type="button" onClick={() => navigate("/tasks")}>
-                        View Tasks
-                    </AppButton>
+                <div className="hero-hex-bg" />
+                <div className="hero-fade" />
+                <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+                    <div className="hero-badge">
+                        <span className="hero-badge-dot" />
+                        Protocol Status: Operational
+                    </div>
+                    <h1 className="hero-title">
+                        Manage Your<br />On-Chain Tasks
+                    </h1>
+                    <p className="hero-subtitle">
+                        建立任務、追蹤完成狀態，並完成鏈上獎勵結算。<br />
+                        Decentralized. Transparent. On-chain.
+                    </p>
+                    <div className="hero-actions">
+                        <AppButton type="button" onClick={() => navigate("/tasks")}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>rocket_launch</span>
+                            Launch Tasks
+                        </AppButton>
+                        <AppButton type="button" variant="secondary" onClick={() => navigate("/logs")}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>receipt_long</span>
+                            History
+                        </AppButton>
+                    </div>
                 </div>
             </section>
 
             {isLoading ? (
-                <PageLoading message="Loading dashboard summary..." />
+                <PageLoading message="Loading dashboard..." />
             ) : (
-                <>
-                    <section className="summary-section">
-                        <SummaryCard title="Total Tasks" value={summary.total} variant="default" />
-                        <SummaryCard title="Completed" value={summary.completed} variant="success" />
-                        <SummaryCard title="Pending" value={summary.pending} variant="info" />
-                    </section>
+                <section className="page-section">
+                    <div className="summary-cards">
+                        <SummaryCard title="Total Tasks" value={summary.total} variant="total" />
+                        <SummaryCard title="Active Tasks" value={summary.pending} variant="open" />
+                        <SummaryCard title="Completed" value={summary.completed} variant="done" />
+                    </div>
 
-                    <section className="page-section dashboard-section">
-                        <div className="page-heading">
-                            <h2>Recent Tasks</h2>
-                            <p>Quickly review the latest task records.</p>
+                    <div className="section-header">
+                        <h2>
+                            Live Ledger Stream
+                        </h2>
+                        <AppButton type="button" variant="secondary" onClick={() => navigate("/tasks")}>
+                            View All
+                        </AppButton>
+                    </div>
+
+                    {recentTasks.length === 0 ? (
+                        <EmptyState
+                            title="No recent tasks"
+                            description="Create a task to see it appear on your dashboard."
+                        />
+                    ) : (
+                        <div className="task-list">
+                            {recentTasks.map((task) => (
+                                <TaskCard key={task.id} task={task} />
+                            ))}
                         </div>
-
-                        {recentTasks.length === 0 ? (
-                            <EmptyState
-                                title="No recent tasks"
-                                description="Create a task to see it appear on your dashboard."
-                            />
-                        ) : (
-                            <div className="task-list">
-                                {recentTasks.map((task) => (
-                                    <TaskCard key={task.id} task={task} />
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                </>
+                    )}
+                </section>
             )}
         </AppLayout>
     );

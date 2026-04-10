@@ -24,8 +24,8 @@ const ConfirmDialog = ({
 }: ConfirmDialogProps) => {
     return (
         <AppModal isOpen={isOpen} title={title} onClose={onCancel}>
-            <div className="confirm-dialog">
-                <p>{description}</p>
+            <div>
+                <p className="confirm-dialog-desc">{description}</p>
 
                 <div className="confirm-dialog-actions">
                     <AppButton type="button" variant="secondary" onClick={onCancel} disabled={isLoading}>

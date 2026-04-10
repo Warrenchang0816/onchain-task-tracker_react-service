@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { isAddress } from "viem";
-import AppButton from "../common/AppButton";
 import { REWARD_VAULT_ADDRESS } from "../../lib/wallet/constants";
 import { taskRewardVaultAbi } from "../../lib/wallet/abi/taskRewardVaultAbi";
 import { toTaskBytes32 } from "../../lib/wallet/taskOnchain";
@@ -85,9 +84,15 @@ const ClaimOnchainButton = ({ task, onSuccess }: ClaimOnchainButtonProps) => {
     return (
         <div className="onchain-button-wrapper">
             {errorMessage && <p className="form-error">{errorMessage}</p>}
-            <AppButton type="button" onClick={handleClaim} disabled={isProcessing}>
-                {isProcessing ? "..." : "Claim On-chain"}
-            </AppButton>
+            <button
+                type="button"
+                className="action-panel-btn-primary action-panel-btn-claim"
+                onClick={handleClaim}
+                disabled={isProcessing}
+            >
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>token</span>
+                {isProcessing ? "Processing..." : "Claim On-chain"}
+            </button>
         </div>
     );
 };

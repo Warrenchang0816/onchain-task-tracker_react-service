@@ -13,43 +13,30 @@ const Header = () => {
     }, []);
 
     return (
-        <header>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                    <h2>On-chain Task Tracker</h2>
+        <header className="app-header">
+            <div className="app-header-brand">
+                <span className="material-symbols-outlined" style={{ fontSize: 18, color: "var(--cyan)" }}>hexagon</span>
+                ON-CHAIN TRACKER
+            </div>
 
-                    <nav>
-                        <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                                isActive ? "nav-link active" : "nav-link"
-                            }
-                        >
-                            Home
-                        </NavLink>
+            <nav className="app-header-nav">
+                <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>home</span>
+                    Home
+                </NavLink>
+                <NavLink to="/tasks" className={({ isActive }) => isActive ? "active" : ""}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>task_alt</span>
+                    Tasks
+                </NavLink>
+{isAuthenticated && (
+                    <NavLink to="/logs" className={({ isActive }) => isActive ? "active" : ""}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>receipt_long</span>
+                        History
+                    </NavLink>
+                )}
+            </nav>
 
-                        <NavLink
-                            to="/tasks"
-                            className={({ isActive }) =>
-                                isActive ? "nav-link active" : "nav-link"
-                            }
-                        >
-                            Tasks
-                        </NavLink>
-
-                        {isAuthenticated && (
-                            <NavLink
-                                to="/logs"
-                                className={({ isActive }) =>
-                                    isActive ? "nav-link active" : "nav-link"
-                                }
-                            >
-                                History
-                            </NavLink>
-                        )}
-                    </nav>
-                </div>
-
+            <div className="app-header-actions">
                 <WalletConnectPanel />
             </div>
         </header>

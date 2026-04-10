@@ -5,8 +5,11 @@ interface EmptyStateProps {
 
 const EmptyState = ({ title, description }: EmptyStateProps) => {
     return (
-        <div className="page-state empty-state">
-            <h2>{title}</h2>
+        <div className="empty-state">
+            <div className="empty-state-icon">
+                <span className="material-symbols-outlined" style={{ fontSize: 48, color: "var(--text-dim)", opacity: 0.4 }}>inbox</span>
+            </div>
+            <h3>{title}</h3>
             <p>{description}</p>
         </div>
     );

@@ -22,7 +22,7 @@ const AppModal = ({ isOpen, title, onClose, children }: AppModalProps) => {
                     <h2>{title}</h2>
                     <button
                         type="button"
-                        className="modal-close-button"
+                        className="modal-close"
                         onClick={onClose}
                     >
                         ×

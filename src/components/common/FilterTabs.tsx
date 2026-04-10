@@ -15,16 +15,12 @@ const FilterTabs = <T extends string>({
     onChange,
 }: FilterTabsProps<T>) => {
     return (
-        <div className="filter-group">
+        <div className="filter-tabs">
             {options.map((option) => (
                 <button
                     key={option.value}
                     type="button"
-                    className={
-                        value === option.value
-                            ? "filter-button active"
-                            : "filter-button"
-                    }
+                    className={value === option.value ? "filter-tab active" : "filter-tab"}
                     onClick={() => onChange(option.value)}
                 >
                     {option.label}

@@ -4,8 +4,9 @@ interface PageLoadingProps {
 
 const PageLoading = ({ message = "Loading..." }: PageLoadingProps) => {
     return (
-        <div className="page-state">
-            <p>{message}</p>
+        <div className="page-loading">
+            <div className="page-loading-spinner" />
+            <span className="page-loading-text">{message}</span>
         </div>
     );
 };

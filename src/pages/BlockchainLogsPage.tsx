@@ -50,11 +50,17 @@ const BlockchainLogsPage = () => {
     return (
         <AppLayout>
             <div className="page-container">
-                <div className="page-heading page-heading-row">
-                    <div>
-                        <h2>Transaction History</h2>
-                        <p style={{ color: "#6b7280", marginTop: "4px" }}>
-                            {isPlatformWallet ? "All on-chain transactions recorded by the platform" : "Your on-chain transaction records"}
+                <div className="page-heading-row">
+                    <div className="page-heading">
+                        <div className="page-label">
+                            <span className="material-symbols-outlined" style={{ fontSize: 13 }}>receipt_long</span>
+                            ON-CHAIN LEDGER
+                        </div>
+                        <h1>Transaction History</h1>
+                        <p>
+                            {isPlatformWallet
+                                ? "All on-chain transactions recorded by the platform"
+                                : "Your on-chain transaction records"}
                         </p>
                     </div>
                 </div>

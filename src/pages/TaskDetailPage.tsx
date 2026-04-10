@@ -221,16 +221,15 @@ const TaskDetailPage = () => {
     return (
         <AppLayout>
             <section className="page-section">
-                <div className="page-heading page-heading-row">
-                    <div>
-                        <AppButton
-                            type="button"
-                            variant="secondary"
-                            onClick={() => navigate("/tasks")}
-                        >
-                            ← Back to Tasks
-                        </AppButton>
-                    </div>
+                <div style={{ marginBottom: 8 }}>
+                    <AppButton
+                        type="button"
+                        variant="secondary"
+                        onClick={() => navigate("/tasks")}
+                    >
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>arrow_back</span>
+                        Back to Tasks
+                    </AppButton>
                 </div>
 
                 {successMessage && (
@@ -262,133 +261,218 @@ const TaskDetailPage = () => {
                 {isLoading || isAuthLoading ? (
                     <PageLoading message="Loading task..." />
                 ) : !task ? (
-                    <p>Task not found.</p>
+                    <p style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>Task not found.</p>
                 ) : (
-                    <div className="task-detail">
-                        <div className="task-detail-header">
-                            <h1>{task.title}</h1>
-                            <div className="task-detail-badges">
-                                <span className={`task-status ${task.status.toLowerCase().replace("_", "-")}`}>
-                                    {task.status}
-                                </span>
-                                <span className="task-onchain-badge">
-                                    {ONCHAIN_STATUS_LABEL[task.onchainStatus] ?? task.onchainStatus}
-                                </span>
+                    <div className="task-detail-layout">
+                        {/* Main content */}
+                        <div className="task-detail-main">
+                            {/* Title + badges */}
+                            <div className="task-detail">
+                                <div className="task-detail-header">
+                                    <div className="task-detail-badges" style={{ marginBottom: 12 }}>
+                                        <span className={`task-status ${task.status.toLowerCase().replace("_", "-")}`}>
+                                            | {task.status.replace("_", " ")} |
+                                        </span>
+                                        <span className="task-onchain-badge">
+                                            {ONCHAIN_STATUS_LABEL[task.onchainStatus] ?? task.onchainStatus}
+                                        </span>
+                                    </div>
+                                    <h1>{task.title}</h1>
+                                </div>
+
+                                <div className="task-detail-body">
+                                    {/* Description */}
+                                    <div className="task-detail-description-block">
+                                        <p className="task-detail-description-title">Task Specification</p>
+                                        <p className="task-detail-description">{task.description}</p>
+                                    </div>
+
+                                    {/* Metadata grid */}
+                                    <dl className="task-detail-meta-grid">
+                                        <div className="task-detail-meta-cell">
+                                            <dt>PRIORITY_LEVEL</dt>
+                                            <dd>
+                                                <span className={`task-priority task-priority--${task.priority.toLowerCase()}`}>
+                                                    {PRIORITY_LABEL[task.priority] ?? task.priority}
+                                                </span>
+                                            </dd>
+                                        </div>
+                                        <div className="task-detail-meta-cell">
+                                            <dt>TOTAL_REWARD</dt>
+                                            <dd style={{ color: "var(--green-dim)", fontFamily: "var(--font-mono)" }}>
+                                                {task.rewardAmount} ETH
+                                            </dd>
+                                        </div>
+                                        <div className="task-detail-meta-cell">
+                                            <dt>ORIGIN_PROTOCOL</dt>
+                                            <dd className="task-detail-address">{task.walletAddress}</dd>
+                                        </div>
+                                        {task.assigneeWalletAddress && (
+                                            <div className="task-detail-meta-cell">
+                                                <dt>CURRENT_ASSIGNEE</dt>
+                                                <dd className="task-detail-address">{task.assigneeWalletAddress}</dd>
+                                            </div>
+                                        )}
+                                        {task.dueDate && (
+                                            <div className="task-detail-meta-cell">
+                                                <dt>DUE_DATE</dt>
+                                                <dd>{new Date(task.dueDate).toLocaleDateString()}</dd>
+                                            </div>
+                                        )}
+                                        <div className="task-detail-meta-cell">
+                                            <dt>CREATED_AT</dt>
+                                            <dd style={{ fontFamily: "var(--font-mono)", fontSize: 12 }}>
+                                                {new Date(task.createdAt).toLocaleString()}
+                                            </dd>
+                                        </div>
+                                    </dl>
+
+                                    {/* TX Ledger */}
+                                    {(task.fundTxHash || task.approveTxHash || task.claimTxHash || task.cancelTxHash) && (
+                                        <div className="task-tx-ledger">
+                                            <div className="task-tx-ledger-title">
+                                                <span className="task-tx-ledger-title-bar" />
+                                                TRANSACTION_LEDGER
+                                            </div>
+                                            {task.fundTxHash && (
+                                                <div className="task-tx-row">
+                                                    <span className="task-tx-label">
+                                                        <span className="material-symbols-outlined" style={{ fontSize: 14, color: "var(--cyan)" }}>deployed_code</span>
+                                                        FUND_TX
+                                                    </span>
+                                                    <a
+                                                        href={`https://sepolia.basescan.org/tx/${task.fundTxHash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="task-tx-hash"
+                                                    >
+                                                        {task.fundTxHash.slice(0, 12)}…{task.fundTxHash.slice(-8)}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {task.approveTxHash && (
+                                                <div className="task-tx-row">
+                                                    <span className="task-tx-label">
+                                                        <span className="material-symbols-outlined" style={{ fontSize: 14, color: "var(--green-dim)" }}>verified</span>
+                                                        APPROVE_TX
+                                                    </span>
+                                                    <a
+                                                        href={`https://sepolia.basescan.org/tx/${task.approveTxHash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="task-tx-hash"
+                                                    >
+                                                        {task.approveTxHash.slice(0, 12)}…{task.approveTxHash.slice(-8)}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {task.claimTxHash && (
+                                                <div className="task-tx-row">
+                                                    <span className="task-tx-label">
+                                                        <span className="material-symbols-outlined" style={{ fontSize: 14, color: "var(--purple)" }}>token</span>
+                                                        CLAIM_TX
+                                                    </span>
+                                                    <a
+                                                        href={`https://sepolia.basescan.org/tx/${task.claimTxHash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="task-tx-hash"
+                                                    >
+                                                        {task.claimTxHash.slice(0, 12)}…{task.claimTxHash.slice(-8)}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {task.cancelTxHash && (
+                                                <div className="task-tx-row">
+                                                    <span className="task-tx-label">
+                                                        <span className="material-symbols-outlined" style={{ fontSize: 14, color: "var(--red)" }}>cancel</span>
+                                                        CANCEL_TX
+                                                    </span>
+                                                    <span className="task-tx-hash">{task.cancelTxHash}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
-                        <div className="task-detail-body">
-                            <p className="task-detail-description">{task.description}</p>
-
-                            <dl className="task-detail-meta">
-                                <dt>Priority</dt>
-                                <dd>{PRIORITY_LABEL[task.priority] ?? task.priority}</dd>
-
-                                <dt>Reward</dt>
-                                <dd>{task.rewardAmount} ETH</dd>
-
-                                <dt>Owner</dt>
-                                <dd className="task-detail-address">{task.walletAddress}</dd>
-
-                                {task.assigneeWalletAddress && (
-                                    <>
-                                        <dt>Assignee</dt>
-                                        <dd className="task-detail-address">{task.assigneeWalletAddress}</dd>
-                                    </>
-                                )}
-
-                                {task.dueDate && (
-                                    <>
-                                        <dt>Due Date</dt>
-                                        <dd>{new Date(task.dueDate).toLocaleDateString()}</dd>
-                                    </>
-                                )}
-
-                                <dt>Created</dt>
-                                <dd>{new Date(task.createdAt).toLocaleString()}</dd>
-
-                                {task.fundTxHash && (
-                                    <>
-                                        <dt>Fund Tx</dt>
-                                        <dd className="task-detail-address">{task.fundTxHash}</dd>
-                                    </>
-                                )}
-                                {task.approveTxHash && (
-                                    <>
-                                        <dt>Approve Tx</dt>
-                                        <dd className="task-detail-address">{task.approveTxHash}</dd>
-                                    </>
-                                )}
-                                {task.claimTxHash && (
-                                    <>
-                                        <dt>Claim Tx</dt>
-                                        <dd className="task-detail-address">{task.claimTxHash}</dd>
-                                    </>
-                                )}
-                                {task.cancelTxHash && (
-                                    <>
-                                        <dt>Cancel Tx</dt>
-                                        <dd className="task-detail-address">{task.cancelTxHash}</dd>
-                                    </>
-                                )}
-                            </dl>
-                        </div>
-
+                        {/* Action Panel Sidebar */}
                         {canOperateTasks && (
-                            <div className="task-detail-actions">
-                                {task.canEdit && (
-                                    <AppButton
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => setIsEditModalOpen(true)}
-                                    >
-                                        Edit
-                                    </AppButton>
-                                )}
-                                {task.canCancel && (
-                                    <AppButton
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => openActionDialog("cancel")}
-                                    >
-                                        Cancel
-                                    </AppButton>
-                                )}
-                                {task.canAccept && (
-                                    <AppButton
-                                        type="button"
-                                        onClick={() => openActionDialog("accept")}
-                                    >
-                                        Accept
-                                    </AppButton>
-                                )}
-                                {task.canSubmit && (
-                                    <AppButton
-                                        type="button"
-                                        onClick={() => setIsSubmitModalOpen(true)}
-                                    >
-                                        Submit
-                                    </AppButton>
-                                )}
-                                {task.canApprove && (
-                                    <AppButton
-                                        type="button"
-                                        onClick={() => openActionDialog("approve")}
-                                    >
-                                        Approve
-                                    </AppButton>
-                                )}
-                                {task.canClaim && !task.canClaimOnchain && (
-                                    <AppButton
-                                        type="button"
-                                        onClick={() => openActionDialog("claim")}
-                                    >
-                                        Claim
-                                    </AppButton>
-                                )}
-                                <FundTaskButton task={task} onSuccess={loadTask} />
-                                <ClaimOnchainButton task={task} onSuccess={loadTask} />
-                            </div>
+                            <aside className="task-detail-sidebar">
+                                <div className="action-panel">
+                                    <div className="action-panel-title">
+                                        TERMINAL_ACTIONS
+                                        <span className="action-panel-live">● LIVE</span>
+                                    </div>
+
+                                    <div className="action-panel-buttons">
+                                        <FundTaskButton task={task} onSuccess={loadTask} />
+                                        <ClaimOnchainButton task={task} onSuccess={loadTask} />
+
+                                        {(task.canEdit || task.canCancel || task.canAccept || task.canSubmit || task.canApprove || (task.canClaim && !task.canClaimOnchain)) && (
+                                            <div className="action-panel-divider" />
+                                        )}
+
+                                        <div className="action-panel-grid">
+                                            {task.canEdit && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost"
+                                                    onClick={() => setIsEditModalOpen(true)}
+                                                >
+                                                    EDIT
+                                                </button>
+                                            )}
+                                            {task.canCancel && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost"
+                                                    onClick={() => openActionDialog("cancel")}
+                                                >
+                                                    CANCEL
+                                                </button>
+                                            )}
+                                            {task.canAccept && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost"
+                                                    onClick={() => openActionDialog("accept")}
+                                                >
+                                                    ACCEPT
+                                                </button>
+                                            )}
+                                            {task.canSubmit && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost"
+                                                    onClick={() => setIsSubmitModalOpen(true)}
+                                                >
+                                                    SUBMIT
+                                                </button>
+                                            )}
+                                            {task.canApprove && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost action-panel-btn-full"
+                                                    onClick={() => openActionDialog("approve")}
+                                                >
+                                                    APPROVE_MILESTONE
+                                                </button>
+                                            )}
+                                            {task.canClaim && !task.canClaimOnchain && (
+                                                <button
+                                                    type="button"
+                                                    className="action-panel-btn-ghost action-panel-btn-full"
+                                                    onClick={() => openActionDialog("claim")}
+                                                >
+                                                    CLAIM_REWARD
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
                         )}
                     </div>
                 )}

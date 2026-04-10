@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+green_food.env
+nft-marketplace.env
 .env
 .claude/settings.local.json
 .env.*

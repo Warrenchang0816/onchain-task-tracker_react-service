@@ -383,69 +383,90 @@ const WalletConnectPanel = () => {
     };
 
     if (!isReady) {
-        return <div>Loading wallet...</div>;
+        return (
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                Syncing...
+            </span>
+        );
     }
 
     if (!window.ethereum) {
         return (
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>MetaMask 未安裝</span>
-            </div>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--red)" }}>
+                MetaMask 未安裝
+            </span>
         );
     }
 
     return (
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             {!address && (
                 <button
                     type="button"
+                    className="wallet-connect-btn"
                     onClick={handleConnect}
                     disabled={isConnecting}
                 >
-                    {isConnecting ? "Connecting..." : "Connect MetaMask"}
+                    {isConnecting ? "Connecting..." : "Connect Wallet"}
                 </button>
             )}
 
             {address && (
                 <>
-                    <span>{shortAddress(address)}</span>
-                    <span>{getChainLabel(chainId)}</span>
-                    <span>
-                        {isAuthenticated ? "Authenticated" : "Wallet Connected"}
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{
+                            width: 7, height: 7, borderRadius: "50%",
+                            background: isAuthenticated ? "var(--green-dim)" : "var(--amber)",
+                            boxShadow: isAuthenticated ? "0 0 6px var(--green-glow)" : "0 0 6px rgba(245,158,11,0.4)",
+                            display: "inline-block",
+                        }} />
+                        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)" }}>
+                            {shortAddress(address)}
+                        </span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-dim)", textTransform: "uppercase" }}>
+                            [{getChainLabel(chainId)}]
+                        </span>
+                    </div>
 
                     {!isAuthenticated && !isWrongNetwork(chainId) && (
                         <button
                             type="button"
+                            className="wallet-connect-btn"
                             onClick={handleSignIn}
                             disabled={isSigningIn}
                         >
-                            {isSigningIn ? "Signing..." : "Sign to Login"}
+                            {isSigningIn ? "Signing..." : "Sign In"}
                         </button>
                     )}
 
-                    <button
-                        type="button"
-                        onClick={handleDisconnect}
-                        disabled={isDisconnecting}
-                    >
-                        {isDisconnecting ? "Disconnecting..." : "Disconnect"}
-                    </button>
-
-                    {isAuthenticated && (
+                    {isAuthenticated ? (
                         <button
                             type="button"
+                            className="app-button app-button-secondary"
+                            style={{ padding: "7px 14px", fontSize: 11 }}
                             onClick={() => setIsLogoutConfirmOpen(true)}
                             disabled={isDisconnecting}
                         >
                             Logout
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="app-button app-button-secondary"
+                            style={{ padding: "7px 14px", fontSize: 11 }}
+                            onClick={handleDisconnect}
+                            disabled={isDisconnecting}
+                        >
+                            {isDisconnecting ? "..." : "Disconnect"}
                         </button>
                     )}
                 </>
             )}
 
             {errorMessage && (
-                <span style={{ color: "red" }}>{errorMessage}</span>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--red)" }}>
+                    {errorMessage}
+                </span>
             )}
             
             <ConfirmDialog

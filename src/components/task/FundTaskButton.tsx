@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { isAddress } from "viem";
-import AppButton from "../common/AppButton";
 import { REWARD_VAULT_ADDRESS } from "../../lib/wallet/constants";
 import { taskRewardVaultAbi } from "../../lib/wallet/abi/taskRewardVaultAbi";
 import { toRewardValue, toTaskBytes32 } from "../../lib/wallet/taskOnchain";
@@ -139,13 +138,15 @@ const FundTaskButton = ({ task, onSuccess }: FundTaskButtonProps) => {
     return (
         <div className="onchain-button-wrapper">
             {errorMessage && <p className="form-error">{errorMessage}</p>}
-            <AppButton
+            <button
                 type="button"
+                className="action-panel-btn-primary action-panel-btn-fund"
                 onClick={handleFund}
                 disabled={!address || isProcessing}
             >
-                {isProcessing ? "..." : "Fund"}
-            </AppButton>
+                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>bolt</span>
+                {isProcessing ? "Processing..." : "FUND_TASK_DEPOSIT"}
+            </button>
         </div>
     );
 };

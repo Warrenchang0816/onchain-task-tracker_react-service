@@ -12,6 +12,26 @@ interface TaskCardProps {
     onClaim?: (task: Task) => void;
 }
 
+const STATUS_CLASS: Record<string, string> = {
+    OPEN: "task-status open",
+    CREATED: "task-status created",
+    IN_PROGRESS: "task-status in-progress",
+    SUBMITTED: "task-status submitted",
+    APPROVED: "task-status approved",
+    COMPLETED: "task-status completed",
+    CANCELLED: "task-status cancelled",
+};
+
+const CARD_STATUS_CLASS: Record<string, string> = {
+    OPEN: "status-open",
+    CREATED: "status-created",
+    IN_PROGRESS: "status-in-progress",
+    SUBMITTED: "status-submitted",
+    APPROVED: "status-approved",
+    COMPLETED: "status-completed",
+    CANCELLED: "status-cancelled",
+};
+
 const TaskCard = ({
     task,
     onEdit,
@@ -29,28 +49,18 @@ const TaskCard = ({
         (task.canApprove && onApprove) ||
         (task.canClaim && onClaim);
 
-    const statusClassName =
-        task.status === "COMPLETED"
-            ? "task-status completed"
-            : task.status === "CANCELLED"
-              ? "task-status cancelled"
-              : task.status === "IN_PROGRESS"
-                ? "task-status in-progress"
-                : task.status === "SUBMITTED"
-                  ? "task-status submitted"
-                  : task.status === "APPROVED"
-                    ? "task-status approved"
-                    : "task-status created";
+    const statusClass = STATUS_CLASS[task.status] ?? "task-status created";
+    const cardStatusClass = CARD_STATUS_CLASS[task.status] ?? "status-created";
 
     return (
-        <div className="task-card">
+        <div className={`task-card ${cardStatusClass}`}>
             <div className="task-card-header">
                 <h3>
                     <Link className="task-card-title-link" to={`/tasks/${task.id}`}>
                         {task.title}
                     </Link>
                 </h3>
-                <span className={statusClassName}>{task.status}</span>
+                <span className={statusClass}>| {task.status.replace("_", " ")} |</span>
             </div>
 
             <p>{task.description}</p>
@@ -72,57 +82,32 @@ const TaskCard = ({
             {shouldShowActions && (
                 <div className="task-card-actions">
                     {task.canEdit && onEdit && (
-                        <AppButton
-                            type="button"
-                            variant="secondary"
-                            onClick={() => onEdit(task)}
-                        >
+                        <AppButton type="button" variant="secondary" onClick={() => onEdit(task)}>
                             Edit
                         </AppButton>
                     )}
-
                     {task.canCancel && onDelete && (
-                        <AppButton
-                            type="button"
-                            variant="secondary"
-                            onClick={() => onDelete(task)}
-                        >
+                        <AppButton type="button" variant="secondary" onClick={() => onDelete(task)}>
                             Cancel
                         </AppButton>
                     )}
-
                     {task.canAccept && onAccept && (
-                        <AppButton
-                            type="button"
-                            onClick={() => onAccept(task)}
-                        >
+                        <AppButton type="button" onClick={() => onAccept(task)}>
                             Accept
                         </AppButton>
                     )}
-
                     {task.canSubmit && onSubmit && (
-                        <AppButton
-                            type="button"
-                            onClick={() => onSubmit(task)}
-                        >
+                        <AppButton type="button" onClick={() => onSubmit(task)}>
                             Submit
                         </AppButton>
                     )}
-
                     {task.canApprove && onApprove && (
-                        <AppButton
-                            type="button"
-                            onClick={() => onApprove(task)}
-                        >
+                        <AppButton type="button" onClick={() => onApprove(task)}>
                             Approve
                         </AppButton>
                     )}
-
                     {task.canClaim && !task.canClaimOnchain && onClaim && (
-                        <AppButton
-                            type="button"
-                            onClick={() => onClaim(task)}
-                        >
+                        <AppButton type="button" onClick={() => onClaim(task)}>
                             Claim
                         </AppButton>
                     )}

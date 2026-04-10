@@ -396,19 +396,25 @@ if (nftImageFile) {
   return (
     <AppLayout>
         <section className="page-section">
-            <div className="page-heading page-heading-row">
-                <div>
-                    <h1>Tasks</h1>
-                    <p>Review your current on-chain task records.</p>
+            <div className="page-heading-row">
+                <div className="page-heading">
+                    <div className="page-label">
+                        <span className="material-symbols-outlined" style={{ fontSize: 13 }}>terminal</span>
+                        SYSTEM_ACCESS: GRANTED
+                    </div>
+                    <h1>Task Operations</h1>
+                    <p>Manage distributed protocol workloads across the Synthetic Ledger network.</p>
                 </div>
 
                 {!isAuthLoading ? (
-                    <div className="page-actions" style={{ display: "flex", gap: "12px" }}>
+                    <div className="page-actions">
                         <AppButton type="button" onClick={openCreateModal}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>add_task</span>
                             Create Task
                         </AppButton>
 
-                        <AppButton type="button" onClick={openNFTOrderModal}>
+                        <AppButton type="button" variant="secondary" onClick={openNFTOrderModal}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>token</span>
                             Create NFT Order
                         </AppButton>
                     </div>
